@@ -1,9 +1,18 @@
+
+# --- backend / lib ---
 fastapi
 uvicorn[standard]
 httpx
 pydantic-settings
 python-dotenv
 tenacity
+
+# --- notebooks / utils ---
+requests
+ipykernel
+jupyterlab
+
+# --- qualité / tests ---
 black
 ruff
 pytest
