@@ -6,6 +6,7 @@ httpx
 pydantic-settings
 python-dotenv
 tenacity
+dotenv
 
 # --- notebooks / utils ---
 requests
