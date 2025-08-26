@@ -6,6 +6,7 @@ httpx
 pydantic-settings
 python-dotenv
 tenacity
+torch
 transformers
 uvicorn[standard]
 
