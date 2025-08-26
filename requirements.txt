@@ -1,12 +1,13 @@
 
 # --- backend / lib ---
+dotenv
 fastapi
-uvicorn[standard]
 httpx
 pydantic-settings
 python-dotenv
 tenacity
-dotenv
+transformers
+uvicorn[standard]
 
 # --- notebooks / utils ---
 requests
