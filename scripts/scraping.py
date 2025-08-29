@@ -12,13 +12,8 @@ UA   = {"User-Agent":"Mozilla/5.0 (CRAT-fetch/1.1)"} #utile de lavoir ici et plu
 
 # === Finding URL functions ===
 
-# Aliases marque -> DCI (à enrichir progressivement)
+# remplir avec la liste de bruno
 ALIASES = {
-    "vogalene": ["métopimazine", "metopimazine", "vogalib", "isalia", "theralene"],  # theralene = alimémazine en vrai, mais le CRAT tague parfois des marques
-    "theralene": ["alimémazine", "alimemazine", "alimemazine"],  # garde les variations d'accents
-    "spasfon": ["phloroglucinol"],
-    "doliprane": ["paracétamol", "paracetamol", "acetaminophen"],
-    "nurofen": ["ibuprofène", "ibuprofen", "ibuprofene"],
 }
 
 def _norm(s: str) -> str:
