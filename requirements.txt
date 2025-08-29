@@ -5,6 +5,8 @@ dotenv
 fastapi
 httpx
 lxml
+numpy
+pandas
 pydantic-settings
 python-dotenv
 tenacity

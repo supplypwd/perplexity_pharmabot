@@ -1,21 +1,24 @@
-# Liste courte v0 (tu peux coller tes grandes listes plus tard)
-ALLOWLIST_BY_TOPIC: dict[str, list[str]] = {
-    "posologies": [
-        "base-donnees-publique.medicaments.gouv.fr",
-        "ansm.sante.fr",
-        "has-sante.fr",
-        "vidal.fr",
-    ],
-    "interactions": [
-        "base-donnees-publique.medicaments.gouv.fr",
-        "ansm.sante.fr",
-        "vidal.fr",
-        "drugs.com",  # si utile
-    ],
-    "grossesse_allaitement": [
-        "lecrat.fr",
-        "has-sante.fr",
-        "ansm.sante.fr",
-        "base-donnees-publique.medicaments.gouv.fr",
-    ],
-}
+# =========== Allowlist pour perplexity ===========
+
+ALLOWLIST_GLOBAL = [
+    'base-donnees-publique.medicaments.gouv.fr',
+    'ansm.sante.fr',
+    'has-sante.fr',
+    'vidal.fr',
+    'ameli.fr',
+    'legifrance.gouv.fr',
+    'service-public.fr',
+    'ordre.pharmacien.fr',
+    'sante.gouv.fr',
+    'santepubliquefrance.fr',
+    'vaccination-info-service.fr',
+    'anses.fr',
+    'europa.eu',
+    'snitem.fr',
+    'euro-pharmat.com',
+    'sante.fr',
+    'sfpc.eu',
+    'sfpediatrie.com',
+    'sfcardio.fr',
+    'snfge.org'
+]
