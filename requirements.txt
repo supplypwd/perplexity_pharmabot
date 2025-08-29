@@ -1,13 +1,16 @@
 
 # --- backend / lib ---
+beautifulsoup4
 dotenv
 fastapi
 httpx
+lxml
 pydantic-settings
 python-dotenv
 tenacity
 torch
 transformers
+unidecode
 uvicorn[standard]
 
 # --- notebooks / utils ---
