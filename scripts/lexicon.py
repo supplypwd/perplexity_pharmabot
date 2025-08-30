@@ -31,25 +31,30 @@ def charge_lexicon(path: str, encoding: str = "cp1252") -> List[str]:
 
 # ---------- Matching dans une question ----------
 
+
 def match_lexicon(question: str, lexicon: List[str]) -> Optional[str]:
     """
     Retourne le nom du médicament trouvé dans la question,
     ou None si rien n'est détecté.
+    - Normalise la question et chaque médicament
+    - Match exact par mot
+    - Fuzzy match si pas de match exact
     """
-    q_norm = normalize_token(question)
+    # Index lexique normalisé -> original
+    lex_norm = {normalize_token(m): m for m in lexicon}
 
-    # 1) Match exact avec frontière de mot
-    for med in lexicon:
-        med_norm = normalize_token(med)
-        if re.search(rf"\b{re.escape(med_norm)}\b", q_norm):
-            return med
+    # Découper la question en tokens (uniquement mots alphanumériques)
+    q_tokens = [normalize_token(tok) for tok in re.findall(r"\w+", question)]
 
-    # 2) Fuzzy match (similitude >= 95 %)
-    candidates = [normalize_token(m) for m in lexicon]
-    close = get_close_matches(q_norm, candidates, n=1, cutoff=0.95)
-    if close:
-        for med in lexicon:
-            if normalize_token(med) == close[0]:
-                return med
+    # 1) Match exact
+    for tok in q_tokens:
+        if tok in lex_norm:
+            return lex_norm[tok]
+
+    # 2) Fuzzy match (cutoff à ajuster entre 0.7 et 0.9 selon tolérance)
+    for tok in q_tokens:
+        close = get_close_matches(tok, list(lex_norm.keys()), n=1, cutoff=0.85)
+        if close:
+            return lex_norm[close[0]]
 
     return None

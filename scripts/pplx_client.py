@@ -1,5 +1,3 @@
-# src/officine_pplx/pplx_client.py
-
 import requests, json
 from .config import settings
 
