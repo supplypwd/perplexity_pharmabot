@@ -3,8 +3,6 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin, quote_plus
 import json
 
-from lexicon import charge_lexicon
-
 BASE = "https://www.lecrat.fr"
 
 # === Headers distincts ===
@@ -50,13 +48,14 @@ def _pick_numeric_links(html: str):
             uniq.append((u, t))
     return uniq
 
-def find_crat_url(med_name: str, topic: str):
-    topic_norm = _norm(topic)
-    topic_token = "allaitement" if topic_norm.startswith("allait") else "grossesse" if "grossess" in topic_norm else topic_norm
-
+def find_crat_url(med_name: str, topic: str) -> str | None:
+    """
+    Trouve la meilleure URL CRAT pour un médicament et un topic ("grossesse" ou "allaitement").
+    Il existe deux pages différentes selon le contexte, on choisit donc celle qui correspond.
+    """
     candidates = []
 
-    # Recherche par TAG
+    # --- 1) Recherche par TAG
     for slug in [_slugify(med_name)]:
         tag_url = f"{BASE}/tag/{slug}/"
         try:
@@ -64,10 +63,10 @@ def find_crat_url(med_name: str, topic: str):
             links = _pick_numeric_links(html)
             if links:
                 candidates.extend(links)
-        except requests.HTTPError:
+        except Exception:
             continue
 
-    # Recherche classique si rien
+    # --- 2) Recherche plein texte si rien trouvé
     if not candidates:
         url = f"{BASE}/?s={quote_plus(_norm(med_name))}"
         try:
@@ -76,7 +75,20 @@ def find_crat_url(med_name: str, topic: str):
         except Exception:
             pass
 
-    return candidates[0][0] if candidates else None
+    if not candidates:
+        return None
+
+    # --- 3) Filtrage par topic
+    topic_norm = "grossess" if topic == "grossesse" else "allait"
+    topic_candidates = [(u, t) for (u, t) in candidates if topic_norm in _norm(u + " " + t)]
+
+    if topic_candidates:
+        return topic_candidates[0][0]  # premier lien qui colle au topic
+
+    # --- 4) Fallback : si aucune URL ne contient explicitement le topic, on renvoie le meilleur candidat brut
+    return candidates[0][0]
+
+
 
 # ----------------------------
 # Fetcher (récupérer contenu CRAT)
