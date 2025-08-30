@@ -9,6 +9,7 @@ numpy
 pandas
 pydantic-settings
 python-dotenv
+rapidfuzz
 tenacity
 torch
 transformers

@@ -1,60 +1,68 @@
-import re, unicodedata
-from difflib import get_close_matches
-from .utils import strip_accents
+import re
 import pandas as pd
-from difflib import get_close_matches
-from typing import List, Optional
+import unicodedata
+from rapidfuzz import process, fuzz
+from typing import Optional, Dict
 
-
-
+# ------------------------------
+# Normalisation
+# ------------------------------
 def normalize_token(s: str) -> str:
-    return strip_accents(s).lower().strip()
+    """
+    Met en minuscules, supprime accents et espaces multiples.
+    """
+    s = (s or "").strip().lower()
+    s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode()
+    return re.sub(r"\s+", " ", s)
 
-# ---------- Chargement du lexique depuis un CSV ----------
-
-def charge_lexicon(path: str, encoding: str = "cp1252") -> List[str]:
+# ------------------------------
+# Chargement lexique
+# ------------------------------
+def charge_lexicon(path: str) -> Dict[str, str]:
     """
     Charge un CSV à 1 seule colonne contenant des noms de médicaments.
-    Retourne une liste Python utilisable par match_lexicon().
+    Retourne un dict {nom_normalisé -> nom_original}.
     """
-    df = pd.read_csv(path, encoding=encoding, header=None, names=["medicament"])
-    # Supprimer les lignes vides et doublons
+    df = pd.read_csv(path, header=None, names=["medicament"])
     meds = (
         df["medicament"]
         .dropna()
         .astype(str)
         .str.strip()
+        .str.upper()
         .drop_duplicates()
         .tolist()
     )
-    return meds
+    # dict clé=normalisé, valeur=original
+    return {normalize_token(m): m for m in meds}
 
-# ---------- Matching dans une question ----------
-
-
-def match_lexicon(question: str, lexicon: List[str]) -> Optional[str]:
+# ------------------------------
+# Matching question ↔ lexique
+# ------------------------------
+def match_lexicon(question: str, lexicon: Dict[str, str]) -> Optional[str]:
     """
     Retourne le nom du médicament trouvé dans la question,
     ou None si rien n'est détecté.
-    - Normalise la question et chaque médicament
-    - Match exact par mot
-    - Fuzzy match si pas de match exact
+    1) Match exact par token
+    2) Fuzzy match avec RapidFuzz (seuil 80)
     """
-    # Index lexique normalisé -> original
-    lex_norm = {normalize_token(m): m for m in lexicon}
-
-    # Découper la question en tokens (uniquement mots alphanumériques)
     q_tokens = [normalize_token(tok) for tok in re.findall(r"\w+", question)]
 
-    # 1) Match exact
+    # 1) Match exact (rapide O(1) avec dict)
     for tok in q_tokens:
-        if tok in lex_norm:
-            return lex_norm[tok]
+        if tok in lexicon:
+            return lexicon[tok]
 
-    # 2) Fuzzy match (cutoff à ajuster entre 0.7 et 0.9 selon tolérance)
+    # 2) Fuzzy match (si aucun exact trouvé)
     for tok in q_tokens:
-        close = get_close_matches(tok, list(lex_norm.keys()), n=1, cutoff=0.85)
-        if close:
-            return lex_norm[close[0]]
+        match = process.extractOne(
+            tok,
+            lexicon.keys(),
+            scorer=fuzz.ratio
+        )
+        if match:
+            best_key, score, _ = match
+            if score >= 80:  # seuil ajustable (70-90)
+                return lexicon[best_key]
 
     return None
