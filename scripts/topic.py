@@ -22,9 +22,9 @@ LEXICON = {
     "allaitement": "allaitement",
     "allaitante": "allaitement",
     "allaitantes": "allaitement",
-    "allait": "allaitement",         # "femme allait"
+    "allait": "allaitement",         # "femme allait" # ???
     "allaiter": "allaitement",
-    "lait": "allaitement",           # à utiliser avec précaution
+    "lait": "allaitement",           # à utiliser avec précaution NON A CAUSE LACTOSE
     "maternel": "allaitement",       # capté dans "lait maternel"
     "lait_maternel": "allaitement"   # token fusionné
 }
