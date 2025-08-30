@@ -12,6 +12,9 @@ def norm(s: str) -> str:
 PREGNANCY_PATTERNS = [
     r"\bgrossesse(s)?\b",
     r"\benceinte(s)?\b",
+
+]
+ALLAIT_PATTERNS = [
     r"\ballait(e|er|ement|ante|antes)\b",
     r"\blactation\b",
     r"\blait\s+maternel\b",

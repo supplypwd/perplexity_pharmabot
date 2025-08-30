@@ -3,14 +3,14 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin, quote_plus
 import json
 
+from lexicon import charge_lexicon
+
 BASE = "https://www.lecrat.fr"
 
 # === Headers distincts ===
 UA_RESOLVER = {"User-Agent": "Mozilla/5.0 (CRAT-fetch/1.1)"}
 UA_FETCH    = {"User-Agent": "Mozilla/5.0", "Accept-Language": "fr"}
 
-# Exemple de lexique (remplir avec la liste complète)
-LEXICON = ['doliprane']
 
 # ----------------------------
 # Utils
